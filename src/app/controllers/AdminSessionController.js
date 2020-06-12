@@ -1,9 +1,9 @@
 import jwt from 'jsonwebtoken';
 import * as yup from 'yup';
-import User from '../models/User';
-import authConfig from '../../config/auth';
+import Admin from '../models/Admin';
+import authConfig from '../../config/adminAuth';
 
-class SessionController {
+class AdminSessionController {
   async store(req, res) {
     const schema = yup.object().shape({
       email: yup.string().required(),
@@ -15,22 +15,22 @@ class SessionController {
     }
 
     try {
-      const checkUser = await User.login(req.body);
+      const checkAdmin = await Admin.login(req.body);
 
-      if (!checkUser) {
+      if (!checkAdmin) {
         return res.status(401).json({ error: 'Email or Password Invalid' });
       }
 
-      const { id, name, email } = checkUser;
+      const { id, name, email } = checkAdmin;
 
-      const checkBlock = await User.verifyBlock(id);
+      const checkBlock = await Admin.verifyBlock(id);
 
       if (!checkBlock) {
-        return res.status(401).json({ error: 'This user is blocked' });
+        return res.status(401).json({ error: 'This admin is blocked' });
       }
 
       return res.json({
-        user: {
+        admin: {
           id,
           name,
           email,
@@ -45,4 +45,4 @@ class SessionController {
   }
 }
 
-export default new SessionController();
+export default new AdminSessionController();

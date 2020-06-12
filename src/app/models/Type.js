@@ -1,16 +1,15 @@
 import mysql from 'mysql';
 import databaseConfig from '../../config/database';
 
-class Category {
+class Type {
   create(data) {
     const db = mysql.createPool(databaseConfig);
 
     const columns = {
-      category_title: data.title,
-      category_cover: data.cover,
+      type_title: data.title,
     };
 
-    const query = 'INSERT INTO categories SET ?';
+    const query = 'INSERT INTO types SET ?';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {
@@ -31,4 +30,4 @@ class Category {
   }
 }
 
-export default new Category();
+export default new Type();

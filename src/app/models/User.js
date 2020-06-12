@@ -5,7 +5,7 @@ class User {
   create(data) {
     const db = mysql.createPool(databaseConfig);
 
-    const user = {
+    const columns = {
       user_name: data.name,
       user_last_name: data.lastName,
       user_email: data.email,
@@ -20,7 +20,7 @@ class User {
       db.getConnection((err, connection) => {
         if (err) reject(err);
 
-        connection.query(query, user, (error, results) => {
+        connection.query(query, columns, (error, results) => {
           connection.release();
 
           connection.destroy();
@@ -61,7 +61,7 @@ class User {
   findById(id) {
     const db = mysql.createPool(databaseConfig);
 
-    const user = {
+    const columns = {
       user_id: id,
     };
 
@@ -71,7 +71,7 @@ class User {
       db.getConnection((err, connection) => {
         if (err) reject(err);
 
-        connection.query(query, user, (error, results) => {
+        connection.query(query, columns, (error, results) => {
           connection.release();
           connection.destroy();
 
@@ -90,7 +90,7 @@ class User {
   delete(id) {
     const db = mysql.createPool(databaseConfig);
 
-    const user = {
+    const columns = {
       user_id: id,
     };
 
@@ -100,7 +100,7 @@ class User {
       db.getConnection((err, connection) => {
         if (err) reject(err);
 
-        connection.query(query, user, (error, results) => {
+        connection.query(query, columns, (error, results) => {
           connection.release();
           connection.destroy();
 
@@ -117,7 +117,7 @@ class User {
   login(data) {
     const db = mysql.createPool(databaseConfig);
 
-    const user = [
+    const columns = [
       data.email,
       mysql.raw(`SHA2('${data.password}', 256)`),
     ];
@@ -128,7 +128,7 @@ class User {
       db.getConnection((err, connection) => {
         if (err) reject(err);
 
-        connection.query(query, user, (error, results) => {
+        connection.query(query, columns, (error, results) => {
           connection.release();
           connection.destroy();
 
@@ -145,7 +145,7 @@ class User {
   verifyBlock(id) {
     const db = mysql.createPool(databaseConfig);
 
-    const user = [
+    const columns = [
       id,
     ];
 
@@ -155,7 +155,7 @@ class User {
       db.getConnection((err, connection) => {
         if (err) reject(err);
 
-        connection.query(query, user, (error, results) => {
+        connection.query(query, columns, (error, results) => {
           connection.release();
           connection.destroy();
 

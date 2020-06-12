@@ -94,3 +94,19 @@ CREATE TABLE IF NOT EXISTS favorites (
   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS admins (
+  admin_id INT NOT NULL AUTO_INCREMENT,
+  admin_name VARCHAR(255) NOT NULL,
+  admin_last_name VARCHAR(255) NOT NULL,
+  admin_email VARCHAR(255) NOT NULL,
+  admin_password VARCHAR(255) NOT NULL,
+  admin_avatar VARCHAR(255),
+  admin_created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  admin_allowed BOOLEAN NOT NULL DEFAULT 1,
+  admin_can_delete BOOLEAN NOT NULL DEFAULT 0,
+  PRIMARY KEY (admin_id),
+  UNIQUE(admin_email)
+);
+
+INSERT INTO admins SET admin_name = 'Admin', admin_last_name = 'Admin', admin_email = "admin@admin", admin_password = SHA2('admin', 256), admin_can_delete = 1;
