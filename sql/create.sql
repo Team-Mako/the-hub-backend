@@ -104,9 +104,9 @@ CREATE TABLE IF NOT EXISTS admins (
   admin_avatar VARCHAR(255),
   admin_created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   admin_allowed BOOLEAN NOT NULL DEFAULT 1,
-  admin_can_delete BOOLEAN NOT NULL DEFAULT 0,
+  admin_master BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (admin_id),
   UNIQUE(admin_email)
 );
 
-INSERT INTO admins SET admin_name = 'Admin', admin_last_name = 'Admin', admin_email = "admin@admin", admin_password = SHA2('admin', 256), admin_can_delete = 1;
+INSERT INTO admins SET admin_name = 'Admin', admin_last_name = 'Admin', admin_email = "admin@admin", admin_password = SHA2('admin', 256), admin_master = 1;

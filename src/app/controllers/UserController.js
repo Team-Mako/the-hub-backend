@@ -21,7 +21,7 @@ class UserController {
       result.message = 'User Created';
       return res.json(result);
     } catch (err) {
-      return res.status(400).json({ error: err.code });
+      return res.status(500).json(err);
     }
   }
 
@@ -33,7 +33,7 @@ class UserController {
       if (err.code === 'ECONNREFUSED') {
         return res.status(500).json({ error: 'Internal Server Error' });
       }
-      return res.status(400).json(err);
+      return res.status(500).json(err);
     }
   }
 
@@ -44,7 +44,7 @@ class UserController {
       const result = await User.findById(id);
       return res.json(result);
     } catch (err) {
-      return res.status(400).json(err);
+      return res.status(500).json(err);
     }
   }
 
@@ -55,7 +55,7 @@ class UserController {
       const result = await User.delete(userId);
       return res.json(result);
     } catch (err) {
-      return res.status(400).json(err);
+      return res.status(500).json(err);
     }
   }
 

@@ -21,9 +21,9 @@ class AdminSessionController {
         return res.status(401).json({ error: 'Email or Password Invalid' });
       }
 
-      const { id, name, email } = checkAdmin;
+      const { admin_id, admin_name, admin_email } = checkAdmin;
 
-      const checkBlock = await Admin.verifyBlock(id);
+      const checkBlock = await Admin.verifyBlock(admin_id);
 
       if (!checkBlock) {
         return res.status(401).json({ error: 'This admin is blocked' });
@@ -31,16 +31,16 @@ class AdminSessionController {
 
       return res.json({
         admin: {
-          id,
-          name,
-          email,
+          admin_id,
+          admin_name,
+          admin_email,
         },
-        token: jwt.sign({ id }, authConfig.secret, {
+        token: jwt.sign({ admin_id }, authConfig.secret, {
           expiresIn: authConfig.expiresIn,
         }),
       });
     } catch (err) {
-      return res.status(401).json({ error: err });
+      return res.status(500).json(err);
     }
   }
 }

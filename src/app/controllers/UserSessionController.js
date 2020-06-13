@@ -11,14 +11,14 @@ class UserSessionController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(401).json({ error: 'Invalid or Missing Arguments' });
+      return res.status(400).json({ error: 'Invalid or Missing Arguments' });
     }
 
     try {
       const checkUser = await User.login(req.body);
 
       if (!checkUser) {
-        return res.status(401).json({ error: 'Email or Password Invalid' });
+        return res.status(400).json({ error: 'Email or Password Invalid' });
       }
 
       const { id, name, email } = checkUser;
@@ -40,7 +40,7 @@ class UserSessionController {
         }),
       });
     } catch (err) {
-      return res.status(401).json({ error: err });
+      return res.status(500).json(err);
     }
   }
 }

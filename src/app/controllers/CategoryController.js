@@ -17,7 +17,7 @@ class CategoryController {
       result.message = 'Category Created';
       return res.json(result);
     } catch (err) {
-      return res.status(400).json({ error: err.code });
+      return res.status(500).json(err);
     }
   }
 }

@@ -1,10 +1,10 @@
 import * as yup from 'yup';
-import Type from '../models/Type';
+import Material from '../models/Material';
 
-class TypeController {
+class MaterialController {
   async store(req, res) {
     const schema = yup.object().shape({
-      title: yup.string().required(),
+      name: yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -12,8 +12,7 @@ class TypeController {
     }
 
     try {
-      const result = await Type.create(req.body);
-      result.message = 'Type Created';
+      const result = await Material.create(req.body);
       return res.json(result);
     } catch (err) {
       return res.status(500).json(err);
@@ -21,4 +20,4 @@ class TypeController {
   }
 }
 
-export default new TypeController();
+export default new MaterialController();
