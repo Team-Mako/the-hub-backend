@@ -25,14 +25,18 @@ class AdminController {
   }
 
   async index(req, res) {
-    let { pg } = req.query;
+    let { pg, limit } = req.query;
 
     if (!pg) {
       pg = 1;
     }
 
+    if (!limit) {
+      limit = 20;
+    }
+
     try {
-      const result = await Admin.list(pg);
+      const result = await Admin.list(pg, limit);
       return res.json(result);
     } catch (err) {
       return res.status(500).json(err);

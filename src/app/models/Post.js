@@ -34,7 +34,7 @@ class Post {
     });
   }
 
-  list(page, limit = 20) {
+  list(page, limit) {
     const db = mysql.createPool(databaseConfig);
 
     const begin = (limit * page) - limit;

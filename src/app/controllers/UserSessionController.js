@@ -21,9 +21,9 @@ class UserSessionController {
         return res.status(400).json({ error: 'Email or Password Invalid' });
       }
 
-      const { id, name, email } = checkUser;
+      const { user_id, user_name, user_email } = checkUser;
 
-      const checkBlock = await User.verifyBlock(id);
+      const checkBlock = await User.verifyBlock(user_id);
 
       if (!checkBlock) {
         return res.status(401).json({ error: 'This user is blocked' });
@@ -31,11 +31,11 @@ class UserSessionController {
 
       return res.json({
         user: {
-          id,
-          name,
-          email,
+          user_id,
+          user_name,
+          user_email,
         },
-        token: jwt.sign({ id }, authConfig.secret, {
+        token: jwt.sign({ user_id }, authConfig.secret, {
           expiresIn: authConfig.expiresIn,
         }),
       });

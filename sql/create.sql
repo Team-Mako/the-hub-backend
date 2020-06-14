@@ -23,15 +23,10 @@ CREATE TABLE IF NOT EXISTS categories (
 CREATE TABLE IF NOT EXISTS types (
   type_id INT NOT NULL AUTO_INCREMENT,
   type_title VARCHAR(255) NOT NULL,
+  category_id INT NOT NULL,
   PRIMARY KEY (type_id),
-  UNIQUE(type_title)
-);
-
-CREATE TABLE IF NOT EXISTS categories_types (
-	category_id INT NOT NULL,
-	type_id INT NOT NULL,
   FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (type_id) REFERENCES types(type_id) ON DELETE CASCADE ON UPDATE CASCADE
+  UNIQUE(type_title)
 );
 
 CREATE TABLE IF NOT EXISTS posts (
@@ -65,7 +60,9 @@ CREATE TABLE IF NOT EXISTS posts_likes (
 CREATE TABLE IF NOT EXISTS materials (
   material_id INT NOT NULL AUTO_INCREMENT,
   material_name VARCHAR(255) NOT NULL,
+  category_id INT NOT NULL,
   PRIMARY KEY (material_id),
+  FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE ON UPDATE CASCADE,
   UNIQUE(material_name)
 );
 
