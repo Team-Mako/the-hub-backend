@@ -11,6 +11,7 @@ class Post {
       post_difficult: data.difficult,
       post_duration: data.duration,
       post_url: data.url,
+      post_created_at: mysql.raw('NOW()'),
       user_id: data.userId,
       category_id: data.categoryId,
       type_id: data.typeId,

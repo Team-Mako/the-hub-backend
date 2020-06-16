@@ -12,6 +12,7 @@ class User {
       user_password: mysql.raw(`SHA2('${data.password}', 256)`),
       user_avatar: data.avatar,
       user_bio: data.bio,
+      user_created_at: mysql.raw('NOW()'),
     };
 
     const query = 'INSERT INTO users SET ?';

@@ -8,12 +8,12 @@ class UserController {
       lastName: yup.string().required(),
       email: yup.string().email().required(),
       password: yup.string().required().min(8),
-      avatar: yup.string(),
-      bio: yup.string(),
+      avatar: yup.string().notRequired(),
+      bio: yup.string().notRequired(),
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Missing or Invalid Data' });
+      return res.status(400).json({ error: `Missing or Invalid Data ${req.body}` });
     }
 
     try {

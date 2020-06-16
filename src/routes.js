@@ -20,7 +20,7 @@ routes.post('/create-session', UserSessionController.store);
 
 // Admin
 routes.post('/admin/create-admin', adminAuthMiddleware, AdminController.store);
-routes.get('/admin/list-admin', adminAuthMiddleware, AdminController.index);
+routes.get('/admin/list-admin', /* adminAuthMiddleware, */ AdminController.index);
 routes.get('/admin/show-admin/:id', adminAuthMiddleware, AdminController.show);
 routes.put('/admin/update-admin', adminAuthMiddleware, AdminController.update);
 routes.delete('/admin/delete-admin', adminAuthMiddleware, AdminController.delete);

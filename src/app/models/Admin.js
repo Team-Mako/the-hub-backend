@@ -11,6 +11,7 @@ class Admin {
       admin_email: data.email,
       admin_password: mysql.raw(`SHA2('${data.password}', 256)`),
       admin_master: data.master,
+      admin_created_at: mysql.raw('NOW()'),
     };
 
     const query = 'INSERT INTO admins SET ?';
