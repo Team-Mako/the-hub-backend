@@ -11,7 +11,6 @@ class PostController {
       desc: yup.string().required(),
       difficult: yup.string().required(),
       duration: yup.string().required(),
-      userId: yup.number().required(),
       categoryId: yup.number().required(),
       typeId: yup.number().required(),
     });
@@ -20,6 +19,7 @@ class PostController {
       return res.status(400).json({ error: 'Missing or Invalid Data' });
     }
 
+    req.body.userId = req.userId;
     req.body.url = urlSlugify.slugify(req.body.title);
 
     try {

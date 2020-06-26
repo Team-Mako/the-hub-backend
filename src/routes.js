@@ -9,8 +9,11 @@ import TypeController from './app/controllers/TypeController';
 import MaterialController from './app/controllers/MaterialController';
 import PostController from './app/controllers/PostController';
 import UserSessionController from './app/controllers/UserSessionController';
+import TestController from './app/controllers/TestController';
 
 const routes = new Router();
+
+routes.get('/test', TestController.index);
 
 // Admin Session
 routes.post('/admin/create-session', AdminSessionController.store);
@@ -20,7 +23,7 @@ routes.post('/create-session', UserSessionController.store);
 
 // Admin
 routes.post('/admin/create-admin', adminAuthMiddleware, AdminController.store);
-routes.get('/admin/list-admin', /* adminAuthMiddleware, */ AdminController.index);
+routes.get('/admin/list-admin', adminAuthMiddleware, AdminController.index);
 routes.get('/admin/show-admin/:id', adminAuthMiddleware, AdminController.show);
 routes.put('/admin/update-admin', adminAuthMiddleware, AdminController.update);
 routes.delete('/admin/delete-admin', adminAuthMiddleware, AdminController.delete);

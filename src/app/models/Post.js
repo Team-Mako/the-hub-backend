@@ -40,7 +40,7 @@ class Post {
 
     const begin = (limit * page) - limit;
 
-    const query = 'SELECT * FROM posts LIMIT ?,?';
+    const query = 'SELECT p.*, u.user_name, u.user_avatar, c.category_title, t.type_title, COUNT(l.post_id) AS post_like FROM posts AS p LEFT JOIN categories AS c ON p.category_id = c.category_id LEFT JOIN users AS u ON p.user_id = u.user_id LEFT JOIN types AS t ON p.type_id = t.type_id LEFT JOIN posts_likes AS l ON p.post_id = l.post_id GROUP BY post_id LIMIT ?,?';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {
@@ -65,7 +65,7 @@ class Post {
       slug,
     ];
 
-    const query = 'SELECT * FROM posts WHERE post_url = ? LIMIT 1';
+    const query = 'SELECT p.*, u.user_name, c.category_title, t.type_title FROM posts AS p LEFT JOIN categories AS c ON p.category_id = c.category_id LEFT JOIN users AS u ON p.user_id = u.user_id LEFT JOIN types AS t ON p.type_id = t.type_id WHERE post_url = ? LIMIT 1';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {

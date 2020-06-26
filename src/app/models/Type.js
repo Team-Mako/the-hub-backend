@@ -7,6 +7,7 @@ class Type {
 
     const columns = {
       type_title: data.title,
+      category_id: data.categoryId,
     };
 
     const query = 'INSERT INTO types SET ?';

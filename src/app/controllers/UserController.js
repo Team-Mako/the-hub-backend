@@ -21,7 +21,7 @@ class UserController {
       result.message = 'User Created';
       return res.json(result);
     } catch (err) {
-      return res.status(500).json(err);
+      return res.status(500).json(err.sqlMessage);
     }
   }
 

@@ -5,6 +5,7 @@ class TypeController {
   async store(req, res) {
     const schema = yup.object().shape({
       title: yup.string().required(),
+      categoryId: yup.number().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
