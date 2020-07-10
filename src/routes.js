@@ -9,11 +9,9 @@ import TypeController from './app/controllers/TypeController';
 import MaterialController from './app/controllers/MaterialController';
 import PostController from './app/controllers/PostController';
 import UserSessionController from './app/controllers/UserSessionController';
-import TestController from './app/controllers/TestController';
+import TotalPostsController from './app/controllers/TotalPostsController';
 
 const routes = new Router();
-
-routes.get('/test', TestController.index);
 
 // Admin Session
 routes.post('/admin/create-session', AdminSessionController.store);
@@ -62,5 +60,6 @@ routes.get('/list-post', PostController.index);
 routes.get('/show-post/:id', PostController.show);
 routes.put('/update-post/:id', userAuthMiddleware, PostController.update);
 routes.delete('/delete-post', userAuthMiddleware, PostController.delete);
+routes.get('/count-post', TotalPostsController.show);
 
 export default routes;

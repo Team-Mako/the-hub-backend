@@ -33,7 +33,7 @@ class Category {
 
     const begin = (limit * page) - limit;
 
-    const query = 'SELECT * FROM categories LIMI ?,?';
+    const query = 'SELECT * FROM categories LIMIT ?,?';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {

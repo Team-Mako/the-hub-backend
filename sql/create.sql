@@ -16,6 +16,9 @@ CREATE TABLE IF NOT EXISTS categories (
   category_id INT NOT NULL AUTO_INCREMENT,
   category_title VARCHAR(255) NOT NULL,
   category_cover VARCHAR(255) NOT NULL,
+  category_cover_small VARCHAR(255) NOT NULL,
+  category_slug VARCHAR(255) NOT NULL,
+  category_subtitle VARCHAR(255) NOT NULL,
   PRIMARY KEY (category_id),
   UNIQUE(category_title)
 );
@@ -99,6 +102,11 @@ CREATE TABLE IF NOT EXISTS admins (
   admin_email VARCHAR(255) NOT NULL,
   admin_password VARCHAR(255) NOT NULL,
   admin_avatar VARCHAR(255),
+  admin_role VARCHAR(255),
+  admin_bio VARCHAR(255),
+  admin_linkedin VARCHAR(255),
+  admin_behance VARCHAR(255),
+  admin_github VARCHAR(255),
   admin_created_at DATETIME NOT NULL,
   admin_allowed BOOLEAN NOT NULL DEFAULT 1,
   admin_master BOOLEAN NOT NULL DEFAULT 0,
@@ -108,17 +116,17 @@ CREATE TABLE IF NOT EXISTS admins (
 
 INSERT INTO admins SET admin_name = 'Admin', admin_last_name = 'Admin', admin_email = "admin@admin", admin_password = SHA2('admin', 256), admin_master = 1, admin_created_at = NOW();
 
-INSERT INTO users SET user_name = 'Leona', user_last_name = 'Davis', user_email = "leonadavis@thehub.ca", user_password = SHA2('leona', 256), user_created_at = NOW();
+INSERT INTO users SET user_name = 'Leona', user_last_name = 'Davis', user_email = "leonadavis@thehub.ca", user_password = SHA2('leona', 256), user_created_at = NOW(), user_avatar = "leonaDavis.jpg";
 
-INSERT INTO categories SET category_title = 'Drinks', category_cover = 'NoCover';
+INSERT INTO categories SET category_title = 'Drinks', category_cover = 'the-hub-drink-category-cover.jpg', category_cover_small = 'the-hub-drink-category-cover-small.jpg', category_subtitle = "Stylish DIY projects to revamp your wardrobe", category_slug = "drinks";
 
 INSERT INTO types SET type_title = 'Non Acool', category_id = 1;
 
-INSERT INTO posts SET post_title = "Seriously Good White", post_cover = "NoCover", post_description = "Description Here", post_visible = 1, post_difficult = "Hard", post_duration = "1hr+", post_created_at = NOW(), post_url = "seriously-good-white", user_id = 1, category_id = 1, type_id = 1;
+INSERT INTO posts SET post_title = "Seriously Good White", post_cover = "examplPic4Post_4.png", post_description = "Description Here", post_visible = 1, post_difficult = "Hard", post_duration = "1hr+", post_created_at = NOW(), post_url = "seriously-good-white", post_views = 0, user_id = 1, category_id = 1, type_id = 1;
 
-INSERT INTO posts SET post_title = "Seriously Good", post_cover = "NoCover", post_description = "Description Here", post_visible = 1, post_difficult = "Hard", post_duration = "1hr+", post_created_at = NOW(), post_url = "seriously-good", user_id = 1, category_id = 1, type_id = 1;
+INSERT INTO posts SET post_title = "Seriously Good", post_cover = "examplPic4Post_4.png", post_description = "Description Here", post_visible = 1, post_difficult = "Hard", post_duration = "1hr+", post_created_at = NOW(), post_url = "seriously-good", post_views = 0, user_id = 1, category_id = 1, type_id = 1;
 
-INSERT INTO posts SET post_title = "Seriously Good White Russian Cocktail Recipe", post_cover = "NoCover", post_description = "Description Here", post_visible = 1, post_difficult = "Hard", post_duration = "1hr+", post_created_at = NOW(), post_url = "seriously-good-white-russian-cocktail-recipe", user_id = 1, category_id = 1, type_id = 1;
+INSERT INTO posts SET post_title = "Seriously Good White Russian Cocktail Recipe", post_cover = "examplPic4Post_4.png", post_description = "Description Here", post_visible = 1, post_difficult = "Hard", post_duration = "1hr+", post_created_at = NOW(), post_url = "seriously-good-white-russian-cocktail-recipe", post_views = 0, user_id = 1, category_id = 1, type_id = 1;
 
 INSERT INTO posts_likes SET post_id = 1, user_id = 1;
 

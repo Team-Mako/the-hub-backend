@@ -13,7 +13,7 @@ class UserController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: `Missing or Invalid Data ${req.body}` });
+      return res.status(400).json({ error: 'Missing or Invalid Data' });
     }
 
     try {
@@ -21,7 +21,7 @@ class UserController {
       result.message = 'User Created';
       return res.json(result);
     } catch (err) {
-      return res.status(500).json(err.sqlMessage);
+      return res.status(500).json({ error: err });
     }
   }
 

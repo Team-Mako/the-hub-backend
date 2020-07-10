@@ -42,7 +42,7 @@ class PostController {
   }
 
   async index(req, res) {
-    let { pg, limit } = req.query;
+    let { pg, limit, user } = req.query;
 
     if (!pg) {
       pg = 1;
@@ -52,8 +52,12 @@ class PostController {
       limit = 20;
     }
 
+    if (!user) {
+      user = null;
+    }
+
     try {
-      const result = await Post.list(pg, limit);
+      const result = await Post.list(pg, limit, user);
       return res.json(result);
     } catch (err) {
       return res.status(500).json(err);
