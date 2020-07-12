@@ -157,6 +157,8 @@ class Post {
       sql = mysql.raw(`WHERE user_id = ${user}`);
     } else if (category) {
       sql = mysql.raw(`WHERE category_id = ${category}`);
+    } else {
+      sql = mysql.raw('');
     }
 
     const query = 'SELECT COUNT(post_id) AS total FROM posts ?';
