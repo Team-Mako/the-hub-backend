@@ -6,19 +6,18 @@ const urlSlugify = new URLSlugify();
 
 class CategoryController {
   async store(req, res) {
-    req.body.cover = req.file.filename;
-
     const schema = yup.object().shape({
       title: yup.string().required(),
       subtitle: yup.string().required(),
       cover: yup.string().required(),
+      coverSmall: yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Missing or Invalid Data' });
     }
 
-    req.body.url = urlSlugify.slugify(req.body.title);
+    req.body.slug = urlSlugify.slugify(req.body.title);
 
     try {
       const result = await Category.create(req.body);

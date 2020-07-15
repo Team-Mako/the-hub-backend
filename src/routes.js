@@ -11,7 +11,7 @@ import MaterialController from './app/controllers/MaterialController';
 import PostController from './app/controllers/PostController';
 import UserSessionController from './app/controllers/UserSessionController';
 import TotalPostsController from './app/controllers/TotalPostsController';
-import imageManipulation from './app/middlewares/imageManipulation';
+import categoryImage from './app/middlewares/categoryImage';
 import multerConfig from './config/multer';
 
 const routes = new Router();
@@ -38,7 +38,7 @@ routes.put('/update-user', userAuthMiddleware, UserController.update);
 routes.delete('/delete-user', userAuthMiddleware, UserController.delete);
 
 // Category
-routes.post('/admin/create-category', adminAuthMiddleware, upload.single('cover'), imageManipulation, CategoryController.store);
+routes.post('/admin/create-category', adminAuthMiddleware, upload.single('cover'), categoryImage, CategoryController.store);
 routes.get('/list-category', CategoryController.index);
 routes.get('/show-category/:id', CategoryController.show);
 routes.put('/admin/update-category/:id', adminAuthMiddleware, CategoryController.update);

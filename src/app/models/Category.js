@@ -9,8 +9,8 @@ class Category {
       category_title: data.title,
       category_subtitle: data.subtitle,
       category_cover: data.cover,
-      category_cover_small: 'teste',
-      category_slug: 'teste',
+      category_cover_small: data.coverSmall,
+      category_slug: data.slug,
     };
 
     const query = 'INSERT INTO categories SET ?';
