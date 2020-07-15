@@ -5,6 +5,7 @@ class MaterialController {
   async store(req, res) {
     const schema = yup.object().shape({
       name: yup.string().required(),
+      category: yup.number().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -13,6 +14,7 @@ class MaterialController {
 
     try {
       const result = await Material.create(req.body);
+      result.message = 'Material Created';
       return res.json(result);
     } catch (err) {
       return res.status(500).json(err);
@@ -20,7 +22,7 @@ class MaterialController {
   }
 
   async index(req, res) {
-    let { pg, limit } = req.query;
+    let { pg, limit, category } = req.query;
 
     if (!pg) {
       pg = 1;
@@ -30,8 +32,12 @@ class MaterialController {
       limit = 20;
     }
 
+    if (!category) {
+      category = '';
+    }
+
     try {
-      const result = await Material.list(pg, limit);
+      const result = await Material.list(pg, limit, category);
       return res.json(result);
     } catch (err) {
       return res.status(500).json(err);

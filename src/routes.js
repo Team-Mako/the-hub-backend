@@ -53,7 +53,8 @@ routes.delete('/admin/delete-type', adminAuthMiddleware, TypeController.delete);
 
 // Material
 routes.post('/create-material', userAuthMiddleware, MaterialController.store);
-routes.get('/list-material', userAuthMiddleware, MaterialController.index);
+routes.post('/admin/create-material', adminAuthMiddleware, MaterialController.store);
+routes.get('/list-material', MaterialController.index);
 routes.get('/admin/show-material/:id', adminAuthMiddleware, MaterialController.show);
 routes.put('/admin/update-material/:id', adminAuthMiddleware, MaterialController.update);
 routes.delete('/admin/delete-material', adminAuthMiddleware, MaterialController.delete);

@@ -7,6 +7,7 @@ class Material {
 
     const columns = {
       material_name: data.name,
+      category_id: data.category,
     };
 
     const query = 'INSERT INTO materials SET ?';
@@ -27,18 +28,25 @@ class Material {
     });
   }
 
-  list(page, limit) {
+  list(page, limit, category) {
     const db = mysql.createPool(databaseConfig);
 
     const begin = (limit * page) - limit;
+    limit = parseInt(limit);
 
-    const query = 'SELECT * FROM types LIMIT ?,?';
+    if (category) {
+      category = mysql.raw(`WHERE category_id = ${category}`);
+    } else {
+      category = mysql.raw('');
+    }
+
+    const query = 'SELECT * FROM materials ? LIMIT ?,?';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {
         if (err) reject(err);
 
-        connection.query(query, [begin, limit], (error, results) => {
+        connection.query(query, [category, begin, limit], (error, results) => {
           connection.release();
           connection.destroy();
 
