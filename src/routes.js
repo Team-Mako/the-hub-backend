@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import multer from 'multer';
 import adminAuthMiddleware from './app/middlewares/adminAuth';
 import AdminSessionController from './app/controllers/AdminSessionController';
 import AdminController from './app/controllers/AdminController';
@@ -10,8 +11,11 @@ import MaterialController from './app/controllers/MaterialController';
 import PostController from './app/controllers/PostController';
 import UserSessionController from './app/controllers/UserSessionController';
 import TotalPostsController from './app/controllers/TotalPostsController';
+import imageManipulation from './app/middlewares/imageManipulation';
+import multerConfig from './config/multer';
 
 const routes = new Router();
+const upload = multer(multerConfig);
 
 // Admin Session
 routes.post('/admin/create-session', AdminSessionController.store);
@@ -34,7 +38,7 @@ routes.put('/update-user', userAuthMiddleware, UserController.update);
 routes.delete('/delete-user', userAuthMiddleware, UserController.delete);
 
 // Category
-routes.post('/admin/create-category', adminAuthMiddleware, CategoryController.store);
+routes.post('/admin/create-category', adminAuthMiddleware, upload.single('cover'), imageManipulation, CategoryController.store);
 routes.get('/list-category', CategoryController.index);
 routes.get('/show-category/:id', CategoryController.show);
 routes.put('/admin/update-category/:id', adminAuthMiddleware, CategoryController.update);

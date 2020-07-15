@@ -18,7 +18,7 @@ class UserSessionController {
       const checkUser = await User.login(req.body);
 
       if (!checkUser) {
-        return res.status(400).json({ error: 'Email or Password Invalid' });
+        return res.status(400).json({ error: 'Your email or password doesn\'t match' });
       }
 
       const { user_id, user_name, user_email } = checkUser;

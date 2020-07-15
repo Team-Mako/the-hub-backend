@@ -7,7 +7,10 @@ class Category {
 
     const columns = {
       category_title: data.title,
+      category_subtitle: data.subtitle,
       category_cover: data.cover,
+      category_cover_small: 'teste',
+      category_slug: 'teste',
     };
 
     const query = 'INSERT INTO categories SET ?';
