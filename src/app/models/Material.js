@@ -130,6 +130,32 @@ class Material {
       });
     });
   }
+
+  checkIfExists(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = [
+      data.name,
+      data.category,
+    ];
+
+    const query = 'SELECT COUNT(material_id) AS total FROM materials WHERE material_name = ? AND category_id = ?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results[0].total);
+        });
+      });
+    });
+  }
 }
 
 export default new Material();

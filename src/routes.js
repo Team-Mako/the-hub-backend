@@ -16,6 +16,7 @@ import multerConfig from './config/multer';
 
 const routes = new Router();
 const upload = multer(multerConfig);
+routes.post('/test', upload.array('stepCover'), (req, res) => res.json(req.files));
 
 // Admin Session
 routes.post('/admin/create-session', AdminSessionController.store);

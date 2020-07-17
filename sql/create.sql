@@ -66,7 +66,6 @@ CREATE TABLE IF NOT EXISTS materials (
   category_id INT NOT NULL,
   PRIMARY KEY (material_id),
   FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  UNIQUE(material_name)
 );
 
 CREATE TABLE IF NOT EXISTS posts_materials (

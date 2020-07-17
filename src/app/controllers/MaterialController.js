@@ -12,6 +12,11 @@ class MaterialController {
       return res.status(400).json({ error: 'Missing or Invalid Data' });
     }
 
+    const check = await Material.checkIfExists(req.body);
+    if (check > 0) {
+      return res.status(400).json({ error: 'There is already a Material with this name' });
+    }
+
     try {
       const result = await Material.create(req.body);
       result.message = 'Material Created';
