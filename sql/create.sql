@@ -45,11 +45,11 @@ CREATE TABLE IF NOT EXISTS posts (
   post_url VARCHAR(255) NOT NULL,
   user_id INT NOT NULL,
   category_id INT NOT NULL,
-  type_id INT NOT NULL,
+  -- type_id INT NOT NULL,
   PRIMARY KEY (post_id),
   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (type_id) REFERENCES types(type_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  -- FOREIGN KEY (type_id) REFERENCES types(type_id) ON DELETE CASCADE ON UPDATE CASCADE,
   UNIQUE(post_url)
 );
 
@@ -65,16 +65,17 @@ CREATE TABLE IF NOT EXISTS materials (
   material_name VARCHAR(255) NOT NULL,
   category_id INT NOT NULL,
   PRIMARY KEY (material_id),
-  FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS posts_materials (
-  post_material_qty INT NOT NULL,
   post_material_meas VARCHAR(255) NOT NULL,
   post_id INT NOT NULL,
   material_id INT NOT NULL,
+  user_id INT NOT NULL,
   FOREIGN KEY (material_id) REFERENCES materials(material_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE ON UPDATE CASCADE  
+  FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE  
 );
 
 CREATE TABLE IF NOT EXISTS posts_steps (

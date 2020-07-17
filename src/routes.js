@@ -12,11 +12,14 @@ import PostController from './app/controllers/PostController';
 import UserSessionController from './app/controllers/UserSessionController';
 import TotalPostsController from './app/controllers/TotalPostsController';
 import categoryImage from './app/middlewares/categoryImage';
+import postImage from './app/middlewares/postImage';
 import multerConfig from './config/multer';
+import TopCategoriesController from './app/controllers/TopCategoriesController';
+import TopMaterialsController from './app/controllers/TopMaterialsController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
-routes.post('/test', upload.array('stepCover'), (req, res) => res.json(req.files));
+routes.post('/test', upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'stepCover' }]), (req, res) => res.json(req.body));
 
 // Admin Session
 routes.post('/admin/create-session', AdminSessionController.store);
@@ -61,11 +64,15 @@ routes.put('/admin/update-material/:id', adminAuthMiddleware, MaterialController
 routes.delete('/admin/delete-material', adminAuthMiddleware, MaterialController.delete);
 
 // Post
-routes.post('/create-post', userAuthMiddleware, PostController.store);
+routes.post('/create-post', userAuthMiddleware, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'stepCover' }]), postImage, PostController.store);
 routes.get('/list-post', PostController.index);
 routes.get('/show-post/:id', PostController.show);
 routes.put('/update-post/:id', userAuthMiddleware, PostController.update);
 routes.delete('/delete-post', userAuthMiddleware, PostController.delete);
 routes.get('/count-post', TotalPostsController.show);
+
+// Insights
+routes.get('/top-categories', TopCategoriesController.index);
+routes.get('/top-materials', TopMaterialsController.index);
 
 export default routes;

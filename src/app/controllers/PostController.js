@@ -12,19 +12,37 @@ class PostController {
       difficult: yup.string().required(),
       duration: yup.string().required(),
       categoryId: yup.number().required(),
-      typeId: yup.number().required(),
+      cover: yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Missing or Invalid Data' });
+      return res.status(400).json(req.body);
     }
 
     req.body.userId = req.userId;
     req.body.url = urlSlugify.slugify(req.body.title);
 
     try {
-      const result = await Post.create(req.body);
-      return res.json(result);
+      const postId = await Post.create(req.body);
+
+      if (Array.isArray(req.body.stepDescription)) {
+        req.body.stepDescription.map(async (step, index) => {
+          const { stepDescription, stepVideo, stepCover } = req.body;
+          await Post.addStep(stepDescription[index], stepCover[index], stepVideo[index], postId.insertId);
+        });
+      } else {
+        const { stepDescription, stepVideo, stepCover } = req.body;
+        await Post.addStep(stepDescription, stepCover, stepVideo, postId.insertId);
+      }
+
+      req.body.material.map(async (step, index) => {
+        const { meas, material, userId } = req.body;
+        await Post.addMaterial(meas[index], postId.insertId, material[index], userId);
+      });
+
+      postId.message = 'Post Created!';
+
+      return res.json(postId);
     } catch (err) {
       return res.status(500).json(err);
     }
