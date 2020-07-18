@@ -115,7 +115,7 @@ class User {
   findById(id) {
     const db = mysql.createPool(databaseConfig);
 
-    const query = 'SELECT * FROM users WHERE user_id = ? LIMIT 1';
+    const query = 'SELECT user_avatar, user_bio, user_created_at, user_email, user_id, user_last_name, user_name FROM users WHERE user_id = ? LIMIT 1';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {

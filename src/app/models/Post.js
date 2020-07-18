@@ -73,7 +73,7 @@ class Post {
       slug,
     ];
 
-    const query = 'SELECT p.*, u.user_name, c.category_title, t.type_title FROM posts AS p LEFT JOIN categories AS c ON p.category_id = c.category_id LEFT JOIN users AS u ON p.user_id = u.user_id LEFT JOIN types AS t ON p.type_id = t.type_id WHERE post_url = ? LIMIT 1';
+    const query = 'SELECT p.*, u.user_name, c.category_title FROM posts AS p LEFT JOIN categories AS c ON p.category_id = c.category_id LEFT JOIN users AS u ON p.user_id = u.user_id WHERE post_url = ? LIMIT 1';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {
@@ -268,6 +268,56 @@ class Post {
     ];
 
     const query = 'SELECT COUNT(pm.material_id) AS top, m.material_name FROM posts_materials AS pm LEFT JOIN materials AS m ON pm.material_id = m.material_id WHERE user_id = ? GROUP BY pm.material_id ORDER BY top DESC LIMIT 3';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  postMaterials(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = [
+      data,
+    ];
+
+    const query = 'SELECT pm.post_material_meas, pm.material_id, m.material_name FROM posts_materials AS pm LEFT JOIN materials AS m ON pm.material_id = m.material_id WHERE pm.post_id = ?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  postSteps(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = [
+      data,
+    ];
+
+    const query = 'SELECT * FROM posts_steps WHERE post_id = ?';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {

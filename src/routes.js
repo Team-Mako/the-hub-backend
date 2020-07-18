@@ -16,6 +16,8 @@ import postImage from './app/middlewares/postImage';
 import multerConfig from './config/multer';
 import TopCategoriesController from './app/controllers/TopCategoriesController';
 import TopMaterialsController from './app/controllers/TopMaterialsController';
+import PostMaterialController from './app/controllers/PostMaterialController';
+import PostStepController from './app/controllers/PostStepController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -66,10 +68,12 @@ routes.delete('/admin/delete-material', adminAuthMiddleware, MaterialController.
 // Post
 routes.post('/create-post', userAuthMiddleware, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'stepCover' }]), postImage, PostController.store);
 routes.get('/list-post', PostController.index);
-routes.get('/show-post/:id', PostController.show);
+routes.get('/show-post/:slug', PostController.show);
 routes.put('/update-post/:id', userAuthMiddleware, PostController.update);
 routes.delete('/delete-post', userAuthMiddleware, PostController.delete);
 routes.get('/count-post', TotalPostsController.show);
+routes.get('/post-material/:postId', PostMaterialController.index);
+routes.get('/post-step/:postId', PostStepController.index);
 
 // Insights
 routes.get('/top-categories', TopCategoriesController.index);

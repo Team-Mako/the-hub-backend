@@ -21,7 +21,9 @@ class UserSessionController {
         return res.status(400).json({ error: 'Your email or password doesn\'t match' });
       }
 
-      const { user_id, user_name, user_email } = checkUser;
+      const {
+        user_id, user_name, user_email, user_avatar,
+      } = checkUser;
 
       const checkBlock = await User.verifyBlock(user_id);
 
@@ -34,6 +36,7 @@ class UserSessionController {
           user_id,
           user_name,
           user_email,
+          user_avatar,
         },
         token: jwt.sign({ user_id }, authConfig.secret, {
           expiresIn: authConfig.expiresIn,
