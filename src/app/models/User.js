@@ -138,16 +138,13 @@ class User {
   update(data) {
     const db = mysql.createPool(databaseConfig);
 
-    const { id, password, avatar } = data;
+    const { id } = data;
 
     const columns = {
       user_name: data.name,
       user_last_name: data.lastName,
       user_bio: data.bio,
     };
-
-    if (password) columns.user_password = password;
-    if (avatar) columns.user_avatar = avatar;
 
     const query = 'UPDATE users SET ? WHERE user_id = ? LIMIT 1';
 
@@ -175,6 +172,93 @@ class User {
     };
 
     const query = 'DELETE FROM users WHERE ? LIMIT 1';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) {
+            reject(error);
+          }
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  checkPassword(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const oldPassword = mysql.raw(`SHA2('${data.oldPassword}', 256)`);
+    const { id } = data;
+
+    const columns = [
+      id,
+      oldPassword,
+    ];
+
+    const query = 'SELECT user_id FROM users WHERE user_id = ? AND user_password = ?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) {
+            reject(error);
+          }
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  updatePassword(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = [
+      mysql.raw(`SHA2('${data.password}', 256)`),
+      data.id,
+    ];
+
+    const query = 'UPDATE users SET user_password = ? WHERE user_id = ?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) {
+            reject(error);
+          }
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  updateAvatar(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = [
+      data.avatar,
+      data.id,
+    ];
+
+    const query = 'UPDATE users SET user_avatar = ? WHERE user_id = ?';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {

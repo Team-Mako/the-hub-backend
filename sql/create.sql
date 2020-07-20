@@ -37,7 +37,6 @@ CREATE TABLE IF NOT EXISTS posts (
   post_title VARCHAR(255) NOT NULL,
   post_cover VARCHAR(255),
   post_description TEXT NOT NULL,
-  post_views INT(10),
   post_visible BOOLEAN NOT NULL DEFAULT 1,
   post_difficult VARCHAR(20) NOT NULL,
   post_duration VARCHAR(30) NOT NULL,
@@ -45,11 +44,11 @@ CREATE TABLE IF NOT EXISTS posts (
   post_url VARCHAR(255) NOT NULL,
   user_id INT NOT NULL,
   category_id INT NOT NULL,
-  -- type_id INT NOT NULL,
+  type_id INT NOT NULL,
   PRIMARY KEY (post_id),
   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  -- FOREIGN KEY (type_id) REFERENCES types(type_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (type_id) REFERENCES types(type_id) ON DELETE CASCADE ON UPDATE CASCADE,
   UNIQUE(post_url)
 );
 
@@ -112,6 +111,12 @@ CREATE TABLE IF NOT EXISTS admins (
   admin_master BOOLEAN NOT NULL DEFAULT 0,
   PRIMARY KEY (admin_id),
   UNIQUE(admin_email)
+);
+
+CREATE TABLE IF NOT EXISTS posts_views(
+  post_view_date DATE,
+  post_id INT NOT NULL,
+  FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 INSERT INTO admins SET admin_name = 'Admin', admin_last_name = 'Admin', admin_email = "admin@admin", admin_password = SHA2('admin', 256), admin_master = 1, admin_created_at = NOW();

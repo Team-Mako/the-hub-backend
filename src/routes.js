@@ -18,10 +18,13 @@ import TopCategoriesController from './app/controllers/TopCategoriesController';
 import TopMaterialsController from './app/controllers/TopMaterialsController';
 import PostMaterialController from './app/controllers/PostMaterialController';
 import PostStepController from './app/controllers/PostStepController';
+import UpdatePasswordController from './app/controllers/UpdatePasswordController';
+import profileImage from './app/middlewares/profileImage';
+import stepImage from './app/middlewares/stepImage';
+import UpdateAvatarController from './app/controllers/UpdateAvatarController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
-routes.post('/test', upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'stepCover' }]), (req, res) => res.json(req.body));
 
 // Admin Session
 routes.post('/admin/create-session', AdminSessionController.store);
@@ -41,6 +44,8 @@ routes.post('/create-user', UserController.store);
 routes.get('/admin/list-user', adminAuthMiddleware, UserController.index);
 routes.get('/show-user/:id', UserController.show);
 routes.put('/update-user', userAuthMiddleware, UserController.update);
+routes.put('/update-password', userAuthMiddleware, UpdatePasswordController.update);
+routes.put('/update-avatar', userAuthMiddleware, upload.single('avatar'), profileImage, UpdateAvatarController.update);
 routes.delete('/delete-user', userAuthMiddleware, UserController.delete);
 
 // Category
@@ -66,7 +71,7 @@ routes.put('/admin/update-material/:id', adminAuthMiddleware, MaterialController
 routes.delete('/admin/delete-material', adminAuthMiddleware, MaterialController.delete);
 
 // Post
-routes.post('/create-post', userAuthMiddleware, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'stepCover' }]), postImage, PostController.store);
+routes.post('/create-post', userAuthMiddleware, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'stepCover' }]), postImage, stepImage, PostController.store);
 routes.get('/list-post', PostController.index);
 routes.get('/show-post/:slug', PostController.show);
 routes.put('/update-post/:id', userAuthMiddleware, PostController.update);

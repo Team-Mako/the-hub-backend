@@ -12,11 +12,11 @@ class PostController {
       difficult: yup.string().required(),
       duration: yup.string().required(),
       categoryId: yup.number().required(),
-      cover: yup.string().required(),
+      cover: yup.string().notRequired(),
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json(req.body);
+      return res.status(400).json({ error: 'Missing or Invalid data' });
     }
 
     req.body.userId = req.userId;

@@ -18,7 +18,7 @@ class UserController {
 
     try {
       const result = await User.create(req.body);
-      result.message = 'User Created';
+      result.message = 'Account created! Sending you to the login page!';
       return res.json(result);
     } catch (err) {
       return res.status(500).json({ error: err });
@@ -64,8 +64,6 @@ class UserController {
       name: yup.string().required(),
       lastName: yup.string().required(),
       bio: yup.string().notRequired(),
-      password: yup.string().min(8).notRequired(),
-      avatar: yup.string().notRequired(),
     });
 
     if (!(await schema.isValid(req.body))) {
