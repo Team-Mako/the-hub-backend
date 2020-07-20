@@ -12,7 +12,6 @@ class Post {
       post_duration: data.duration,
       post_url: data.url,
       post_created_at: mysql.raw('NOW()'),
-      post_views: 0,
       post_cover: data.cover,
       user_id: data.userId,
       category_id: data.categoryId,
@@ -48,7 +47,7 @@ class Post {
     limit = parseInt(limit);
     const begin = (limit * page) - limit;
 
-    const query = 'SELECT p.*, u.user_id, u.user_name, u.user_avatar, c.category_id, c.category_title, COUNT(l.post_id) AS post_like FROM posts AS p LEFT JOIN categories AS c ON p.category_id = c.category_id LEFT JOIN users AS u ON p.user_id = u.user_id LEFT JOIN posts_likes AS l ON p.post_id = l.post_id ? GROUP BY post_id ORDER BY post_created_at DESC LIMIT ?,?';
+    const query = 'SELECT p.*, u.user_id, u.user_name, u.user_avatar, c.category_id, c.category_title, (SELECT COUNT(post_id) FROM posts_likes WHERE post_id = p.post_id) AS post_likes, (SELECT COUNT(post_id) FROM posts_views WHERE post_id = p.post_id) AS post_views FROM posts AS p LEFT JOIN categories AS c ON p.category_id = c.category_id LEFT JOIN users AS u ON p.user_id = u.user_id ? GROUP BY post_id ORDER BY post_created_at DESC LIMIT ?,?';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {
@@ -73,7 +72,7 @@ class Post {
       slug,
     ];
 
-    const query = 'SELECT p.*, u.user_name, u.user_avatar, c.category_title FROM posts AS p LEFT JOIN categories AS c ON p.category_id = c.category_id LEFT JOIN users AS u ON p.user_id = u.user_id WHERE post_url = ? LIMIT 1';
+    const query = 'SELECT p.*, u.user_name, u.user_avatar, c.category_title, (SELECT COUNT(post_id) FROM posts_likes WHERE post_id = p.post_id) AS post_likes, (SELECT COUNT(post_id) FROM posts_views WHERE post_id = p.post_id) AS post_views FROM posts AS p LEFT JOIN categories AS c ON p.category_id = c.category_id LEFT JOIN users AS u ON p.user_id = u.user_id WHERE post_url = ?';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {
@@ -318,6 +317,213 @@ class Post {
     ];
 
     const query = 'SELECT * FROM posts_steps WHERE post_id = ?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  updateViews(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = {
+      post_view_date: mysql.raw('NOW()'),
+      post_id: data,
+    };
+
+    const query = 'INSERT INTO posts_views SET ?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  checkLike(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = [
+      parseInt(data.postId),
+      data.userId,
+    ];
+
+    const query = 'SELECT COUNT(post_id) AS "check" FROM posts_likes WHERE post_id = ? AND user_id = ?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  insertLike(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = {
+      user_id: data.userId,
+      post_id: data.postId,
+    };
+
+    const query = 'INSERT INTO posts_likes SET ?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  removeLike(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = [
+      data.postId,
+      data.userId,
+    ];
+
+    const query = 'DELETE FROM posts_likes WHERE post_id = ? AND user_id = ?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  setFavourite(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = {
+      user_id: data.userId,
+      post_id: data.postId,
+    };
+
+    const query = 'INSERT INTO favorites SET ?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  checkFavourite(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = [
+      data.userId,
+      data.postId,
+    ];
+
+    const query = 'SELECT COUNT(post_id) AS "check" FROM favorites WHERE user_id = ? AND post_id = ?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  removeFavourite(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = [
+      data.postId,
+      data.userId,
+    ];
+
+    const query = 'DELETE FROM favorites WHERE post_id = ? AND user_id = ?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  favList(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = [
+      data,
+    ];
+
+    const query = 'SELECT f.post_id, p.post_title, p.post_cover, p.post_url, u.user_name, u.user_avatar, (SELECT COUNT(post_id) FROM posts_views WHERE post_id = f.post_id) AS post_views, (SELECT COUNT(post_id) FROM posts_likes WHERE post_id = f.post_id) AS post_likes FROM favorites AS f LEFT JOIN posts AS p ON f.post_id = p.post_id LEFT JOIN users AS u ON p.user_id = u.user_id WHERE f.user_id = ?';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {

@@ -22,6 +22,9 @@ import UpdatePasswordController from './app/controllers/UpdatePasswordController
 import profileImage from './app/middlewares/profileImage';
 import stepImage from './app/middlewares/stepImage';
 import UpdateAvatarController from './app/controllers/UpdateAvatarController';
+import UpdatePostViewsController from './app/controllers/UpdatePostViewsController';
+import LikeController from './app/controllers/LikeController';
+import FavouriteController from './app/controllers/FavouriteController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -79,6 +82,14 @@ routes.delete('/delete-post', userAuthMiddleware, PostController.delete);
 routes.get('/count-post', TotalPostsController.show);
 routes.get('/post-material/:postId', PostMaterialController.index);
 routes.get('/post-step/:postId', PostStepController.index);
+routes.put('/post-view/:postId', UpdatePostViewsController.store);
+routes.get('/check-like/:postId', userAuthMiddleware, LikeController.show);
+routes.put('/post-like/:postId', userAuthMiddleware, LikeController.store);
+routes.delete('/remove-like/:postId', userAuthMiddleware, LikeController.delete);
+routes.put('/post-favourite/:postId', userAuthMiddleware, FavouriteController.store);
+routes.delete('/remove-favourite/:postId', userAuthMiddleware, FavouriteController.delete);
+routes.get('/check-favourite/:postId', userAuthMiddleware, FavouriteController.show);
+routes.get('/favourite-list', userAuthMiddleware, FavouriteController.index);
 
 // Insights
 routes.get('/top-categories', TopCategoriesController.index);

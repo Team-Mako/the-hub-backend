@@ -23,15 +23,6 @@ CREATE TABLE IF NOT EXISTS categories (
   UNIQUE(category_title)
 );
 
-CREATE TABLE IF NOT EXISTS types (
-  type_id INT NOT NULL AUTO_INCREMENT,
-  type_title VARCHAR(255) NOT NULL,
-  category_id INT NOT NULL,
-  PRIMARY KEY (type_id),
-  FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  UNIQUE(type_title)
-);
-
 CREATE TABLE IF NOT EXISTS posts (
   post_id INT NOT NULL AUTO_INCREMENT,
   post_title VARCHAR(255) NOT NULL,
@@ -44,11 +35,9 @@ CREATE TABLE IF NOT EXISTS posts (
   post_url VARCHAR(255) NOT NULL,
   user_id INT NOT NULL,
   category_id INT NOT NULL,
-  type_id INT NOT NULL,
   PRIMARY KEY (post_id),
   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (type_id) REFERENCES types(type_id) ON DELETE CASCADE ON UPDATE CASCADE,
   UNIQUE(post_url)
 );
 
