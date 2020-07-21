@@ -1,7 +1,7 @@
 export default {
   host: 'localhost',
-  user: 'root',
-  password: 'root',
+  user: 'thehubadm',
+  password: 'Y?rq24c8',
   database: 'thehub',
 };
 
