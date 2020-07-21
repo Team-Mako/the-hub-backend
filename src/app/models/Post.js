@@ -65,6 +65,30 @@ class Post {
     });
   }
 
+  listByCategory(page, limit, category) {
+    const db = mysql.createPool(databaseConfig);
+
+    limit = parseInt(limit);
+    const begin = (limit * page) - limit;
+
+    const query = 'SELECT p.*, u.user_id, u.user_name, u.user_avatar, c.category_id, c.category_title, (SELECT COUNT(post_id) FROM posts_likes WHERE post_id = p.post_id) AS post_likes, (SELECT COUNT(post_id) FROM posts_views WHERE post_id = p.post_id) AS post_views FROM posts AS p LEFT JOIN categories AS c ON p.category_id = c.category_id LEFT JOIN users AS u ON p.user_id = u.user_id WHERE p.category_id = ? GROUP BY post_id ORDER BY post_created_at DESC LIMIT ?,?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, [category, begin, limit], (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
   findBySlug(slug) {
     const db = mysql.createPool(databaseConfig);
 

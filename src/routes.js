@@ -25,7 +25,8 @@ import UpdateAvatarController from './app/controllers/UpdateAvatarController';
 import UpdatePostViewsController from './app/controllers/UpdatePostViewsController';
 import LikeController from './app/controllers/LikeController';
 import FavouriteController from './app/controllers/FavouriteController';
-import PostsViewsControllers from './app/controllers/PostsViewsControllers';
+import PostsViewsControllers from './app/controllers/PostsViewsController';
+import PostByCategoryController from './app/controllers/PostByCategoryController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -55,7 +56,8 @@ routes.delete('/delete-user', userAuthMiddleware, UserController.delete);
 // Category
 routes.post('/admin/create-category', adminAuthMiddleware, upload.single('cover'), categoryImage, CategoryController.store);
 routes.get('/list-category', CategoryController.index);
-routes.get('/show-category/:id', CategoryController.show);
+routes.get('/category-post', PostByCategoryController.index);
+routes.get('/show-category/:slug', CategoryController.show);
 routes.put('/admin/update-category/:id', adminAuthMiddleware, CategoryController.update);
 routes.delete('/admin/delete-category', adminAuthMiddleware, CategoryController.delete);
 

@@ -48,12 +48,12 @@ class CategoryController {
   }
 
   async show(req, res) {
-    const { id } = req.params;
+    const { slug } = req.params;
 
-    if (!id) return res.status(401).json({ error: 'Id not provided' });
+    if (!slug) return res.status(401).json({ error: 'Id not provided' });
 
     try {
-      const result = await Category.findById(id);
+      const result = await Category.findBySlug(slug);
       return res.json(result);
     } catch (err) {
       return res.status(500).json(err);

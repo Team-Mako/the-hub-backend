@@ -75,6 +75,27 @@ class Category {
     });
   }
 
+  findBySlug(slug) {
+    const db = mysql.createPool(databaseConfig);
+
+    const query = 'SELECT * FROM categories WHERE category_slug = ? LIMIT 1';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, slug, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results[0]);
+        });
+      });
+    });
+  }
+
   update(data) {
     const db = mysql.createPool(databaseConfig);
 
