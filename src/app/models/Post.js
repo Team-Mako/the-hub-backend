@@ -334,12 +334,13 @@ class Post {
     });
   }
 
-  updateViews(data) {
+  updateViews(postId, userId) {
     const db = mysql.createPool(databaseConfig);
 
     const columns = {
       post_view_date: mysql.raw('NOW()'),
-      post_id: data,
+      post_id: postId,
+      user_id: userId,
     };
 
     const query = 'INSERT INTO posts_views SET ?';
