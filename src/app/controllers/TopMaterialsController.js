@@ -2,7 +2,8 @@ import Post from '../models/Post';
 
 class TopMaterialsController {
   async index(req, res) {
-    const { userId } = req.query;
+    const { userId } = req;
+
     try {
       const result = await Post.topMaterials(userId);
       return res.json(result);

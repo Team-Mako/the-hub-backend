@@ -77,7 +77,14 @@ routes.put('/admin/update-material/:id', adminAuthMiddleware, MaterialController
 routes.delete('/admin/delete-material', adminAuthMiddleware, MaterialController.delete);
 
 // Post
-routes.post('/create-post', userAuthMiddleware, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'stepCover' }]), postImage, stepImage, PostController.store);
+routes.post(
+  '/create-post',
+  userAuthMiddleware,
+  upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'stepCover' }]),
+  postImage,
+  stepImage,
+  PostController.store,
+);
 routes.get('/list-post', PostController.index);
 routes.get('/show-post/:slug', PostController.show);
 routes.put('/update-post/:id', userAuthMiddleware, PostController.update);

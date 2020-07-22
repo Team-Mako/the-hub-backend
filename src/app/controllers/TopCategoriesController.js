@@ -2,7 +2,8 @@ import Post from '../models/Post';
 
 class TopCategoriesController {
   async index(req, res) {
-    const { userId } = req.query;
+    const { userId } = req;
+
     try {
       const result = await Post.topCategories(userId);
       return res.json(result);

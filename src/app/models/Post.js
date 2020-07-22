@@ -565,6 +565,37 @@ class Post {
       });
     });
   }
+
+  timelineView(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const date = new Date();
+    const nowDay = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+    const setOld = date.setDate(date.getDate() - 7);
+    const oldDay = `${date.getFullYear(setOld)}-${date.getMonth(setOld) + 1}-${date.getDate(setOld)}`;
+
+    const columns = [
+      data,
+      oldDay,
+    ];
+
+    const query = 'SELECT COUNT(user_id) AS Total, post_view_date FROM posts_views WHERE user_id = ? AND post_view_date BETWEEN ? AND NOW() GROUP BY post_view_date';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
 }
 
 export default new Post();
