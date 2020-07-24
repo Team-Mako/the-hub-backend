@@ -27,6 +27,7 @@ import LikeController from './app/controllers/LikeController';
 import FavouriteController from './app/controllers/FavouriteController';
 import PostsViewsControllers from './app/controllers/PostsViewsController';
 import PostByCategoryController from './app/controllers/PostByCategoryController';
+import SearchController from './app/controllers/SearchController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -87,7 +88,7 @@ routes.post(
 );
 routes.get('/list-post', PostController.index);
 routes.get('/show-post/:slug', PostController.show);
-routes.put('/update-post/:id', userAuthMiddleware, PostController.update);
+routes.put('/update-post/:postId', userAuthMiddleware, PostController.update);
 routes.delete('/delete-post', userAuthMiddleware, PostController.delete);
 routes.get('/count-post', TotalPostsController.show);
 routes.get('/post-material/:postId', PostMaterialController.index);
@@ -100,6 +101,7 @@ routes.put('/post-favourite/:postId', userAuthMiddleware, FavouriteController.st
 routes.delete('/remove-favourite/:postId', userAuthMiddleware, FavouriteController.delete);
 routes.get('/check-favourite/:postId', userAuthMiddleware, FavouriteController.show);
 routes.get('/favourite-list', userAuthMiddleware, FavouriteController.index);
+routes.get('/search', SearchController.index);
 
 // Insights
 routes.get('/top-categories', userAuthMiddleware, TopCategoriesController.index);

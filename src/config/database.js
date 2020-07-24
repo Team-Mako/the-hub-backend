@@ -1,11 +1,8 @@
-export default {
-  host: 'localhost',
-  // user: 'thehubadm',
-  // password: 'Y?rq24c8',
-  user: 'root',
-  password: 'root',
-  database: 'thehub',
-};
+import 'dotenv/config';
 
-// Remote User: thehubadm
-// Remote Pass: Y?rq24c8
+export default {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
+};

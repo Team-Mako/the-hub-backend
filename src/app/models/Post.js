@@ -202,15 +202,17 @@ class Post {
     });
   }
 
-  addStep(description, cover, video, id) {
+  addStep(description, cover, id) {
     const db = mysql.createPool(databaseConfig);
 
     const columns = {
       post_step_description: description,
-      post_step_cover: cover,
-      post_step_video: video,
       post_id: id,
     };
+
+    if (cover.length > 0) {
+      columns.post_step_cover = cover;
+    }
 
     const query = 'INSERT INTO posts_steps SET ?';
 
@@ -580,6 +582,31 @@ class Post {
     ];
 
     const query = 'SELECT COUNT(user_id) AS Total, post_view_date FROM posts_views WHERE user_id = ? AND post_view_date BETWEEN ? AND NOW() GROUP BY post_view_date';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  searchByName(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = [
+      data,
+    ];
+
+    const query = 'SELECT f.post_id, p.post_title, p.post_cover, p.post_url, u.user_name, u.user_avatar, (SELECT COUNT(post_id) FROM posts_views WHERE post_id = f.post_id) AS post_views, (SELECT COUNT(post_id) FROM posts_likes WHERE post_id = f.post_id) AS post_likes FROM favorites AS f LEFT JOIN posts AS p ON f.post_id = p.post_id LEFT JOIN users AS u ON p.user_id = u.user_id WHERE p.post_title LIKE ?';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {

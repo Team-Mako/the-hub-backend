@@ -27,12 +27,20 @@ class PostController {
 
       if (Array.isArray(req.body.stepDescription)) {
         req.body.stepDescription.map(async (step, index) => {
-          const { stepDescription, stepVideo, stepCover } = req.body;
-          await Post.addStep(stepDescription[index], stepCover[index], stepVideo[index], postId.insertId);
+          const { stepDescription, stepCover } = req.body;
+          await Post.addStep(stepDescription[index], stepCover[index], postId.insertId);
         });
       } else {
-        const { stepDescription, stepVideo, stepCover } = req.body;
-        await Post.addStep(stepDescription, stepCover, stepVideo, postId.insertId);
+        const { stepDescription, stepCover } = req.body;
+        let stepCoverOne;
+
+        if (stepCover) {
+          stepCoverOne = stepCover;
+        } else {
+          stepCoverOne = false;
+        }
+
+        await Post.addStep(stepDescription, stepCoverOne, postId.insertId);
       }
 
       req.body.material.map(async (step, index) => {
