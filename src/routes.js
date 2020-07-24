@@ -28,6 +28,7 @@ import FavouriteController from './app/controllers/FavouriteController';
 import PostsViewsControllers from './app/controllers/PostsViewsController';
 import PostByCategoryController from './app/controllers/PostByCategoryController';
 import SearchController from './app/controllers/SearchController';
+import CommentController from './app/controllers/CommentController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -78,14 +79,7 @@ routes.put('/admin/update-material/:id', adminAuthMiddleware, MaterialController
 routes.delete('/admin/delete-material', adminAuthMiddleware, MaterialController.delete);
 
 // Post
-routes.post(
-  '/create-post',
-  userAuthMiddleware,
-  upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'stepCover' }]),
-  postImage,
-  stepImage,
-  PostController.store,
-);
+routes.post('/create-post', userAuthMiddleware, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'stepCover' }]), postImage, stepImage, PostController.store);
 routes.get('/list-post', PostController.index);
 routes.get('/show-post/:slug', PostController.show);
 routes.put('/update-post/:postId', userAuthMiddleware, PostController.update);
@@ -95,7 +89,7 @@ routes.get('/post-material/:postId', PostMaterialController.index);
 routes.get('/post-step/:postId', PostStepController.index);
 routes.put('/post-view', UpdatePostViewsController.store);
 routes.get('/check-like/:postId', userAuthMiddleware, LikeController.show);
-routes.put('/post-like/:postId', userAuthMiddleware, LikeController.store);
+routes.put('/post-like/:postId/:giveId', userAuthMiddleware, LikeController.store);
 routes.delete('/remove-like/:postId', userAuthMiddleware, LikeController.delete);
 routes.put('/post-favourite/:postId', userAuthMiddleware, FavouriteController.store);
 routes.delete('/remove-favourite/:postId', userAuthMiddleware, FavouriteController.delete);
@@ -103,9 +97,15 @@ routes.get('/check-favourite/:postId', userAuthMiddleware, FavouriteController.s
 routes.get('/favourite-list', userAuthMiddleware, FavouriteController.index);
 routes.get('/search', SearchController.index);
 
+// Comments
+routes.post('/create-comment', userAuthMiddleware, CommentController.store);
+routes.get('/get-comment', CommentController.index);
+
 // Insights
 routes.get('/top-categories', userAuthMiddleware, TopCategoriesController.index);
 routes.get('/top-materials', userAuthMiddleware, TopMaterialsController.index);
 routes.get('/views', userAuthMiddleware, PostsViewsControllers.show);
+routes.get('/total-likes', userAuthMiddleware, LikeController.index);
+routes.get('/total-comments', userAuthMiddleware, CommentController.show);
 
 export default routes;

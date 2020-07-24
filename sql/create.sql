@@ -43,8 +43,10 @@ CREATE TABLE IF NOT EXISTS posts (
 
 CREATE TABLE IF NOT EXISTS posts_likes (
   post_id INT NOT NULL,
+  give_id INT NOT NULL,
   user_id INT NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (give_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -63,7 +65,7 @@ CREATE TABLE IF NOT EXISTS posts_materials (
   user_id INT NOT NULL,
   FOREIGN KEY (material_id) REFERENCES materials(material_id) ON DELETE CASCADE ON UPDATE CASCADE,
   FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE  
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS posts_steps (
@@ -113,10 +115,13 @@ CREATE TABLE IF NOT EXISTS posts_views(
 CREATE TABLE IF NOT EXISTS posts_comments(
   post_comment_id INT NOT NULL AUTO_INCREMENT,
   post_comment_content TEXT NOT NULL,
+  post_comment_at DATETIME NOT NULL,
   post_id INT NOT NULL,
   user_id INT NOT NULL,
+  give_id INT NOT NULL,
   FOREIGN KEY (post_comment_id) REFERENCES posts(post_id) ON DELETE CASCADE ON UPDATE CASCADE,
-  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
+  FOREIGN KEY (give_id) REFERENCES users(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 INSERT INTO admins SET admin_name = 'Admin', admin_last_name = 'Admin', admin_email = "admin@admin", admin_password = SHA2('admin', 256), admin_master = 1, admin_created_at = NOW();

@@ -171,7 +171,7 @@ class Post {
     });
   }
 
-  totalPosts(user, category) {
+  totalPosts(user, category, search) {
     const db = mysql.createPool(databaseConfig);
 
     let sql;
@@ -180,6 +180,8 @@ class Post {
       sql = mysql.raw(`WHERE user_id = ${user}`);
     } else if (category) {
       sql = mysql.raw(`WHERE category_id = ${category}`);
+    } else if (search) {
+      sql = mysql.raw(`WHERE post_title LIKE '${search}'`);
     } else {
       sql = mysql.raw('');
     }
@@ -395,7 +397,7 @@ class Post {
       data.userId,
     ];
 
-    const query = 'SELECT COUNT(post_id) AS "check" FROM posts_likes WHERE post_id = ? AND user_id = ?';
+    const query = 'SELECT COUNT(post_id) AS "check" FROM posts_likes WHERE post_id = ? AND give_id = ?';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {
@@ -419,6 +421,7 @@ class Post {
     const columns = {
       user_id: data.userId,
       post_id: data.postId,
+      give_id: data.giveId,
     };
 
     const query = 'INSERT INTO posts_likes SET ?';
@@ -447,7 +450,7 @@ class Post {
       data.userId,
     ];
 
-    const query = 'DELETE FROM posts_likes WHERE post_id = ? AND user_id = ?';
+    const query = 'DELETE FROM posts_likes WHERE post_id = ? AND give_id = ?';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {
@@ -572,7 +575,6 @@ class Post {
     const db = mysql.createPool(databaseConfig);
 
     const date = new Date();
-    const nowDay = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
     const setOld = date.setDate(date.getDate() - 7);
     const oldDay = `${date.getFullYear(setOld)}-${date.getMonth(setOld) + 1}-${date.getDate(setOld)}`;
 
@@ -599,20 +601,113 @@ class Post {
     });
   }
 
-  searchByName(data) {
+  searchByName(search, page, limit) {
     const db = mysql.createPool(databaseConfig);
 
-    const columns = [
-      data,
-    ];
+    const value = mysql.raw(`LIKE '%${search}%'`);
 
-    const query = 'SELECT f.post_id, p.post_title, p.post_cover, p.post_url, u.user_name, u.user_avatar, (SELECT COUNT(post_id) FROM posts_views WHERE post_id = f.post_id) AS post_views, (SELECT COUNT(post_id) FROM posts_likes WHERE post_id = f.post_id) AS post_likes FROM favorites AS f LEFT JOIN posts AS p ON f.post_id = p.post_id LEFT JOIN users AS u ON p.user_id = u.user_id WHERE p.post_title LIKE ?';
+    limit = parseInt(limit);
+    const begin = (limit * page) - limit;
+
+    const query = 'SELECT p.*, u.user_id, u.user_name, u.user_avatar, c.category_id, c.category_title, (SELECT COUNT(post_id) FROM posts_likes WHERE post_id = p.post_id) AS post_likes, (SELECT COUNT(post_id) FROM posts_views WHERE post_id = p.post_id) AS post_views FROM posts AS p LEFT JOIN categories AS c ON p.category_id = c.category_id LEFT JOIN users AS u ON p.user_id = u.user_id WHERE p.post_title ? GROUP BY post_id ORDER BY post_created_at DESC LIMIT ?,?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, [value, begin, limit], (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  totalLikes(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const query = 'SELECT (SELECT COUNT(user_id) FROM posts_likes WHERE user_id = ?) AS "received", (SELECT COUNT(give_id) FROM posts_likes WHERE give_id = ?) AS "given" FROM posts_likes';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, [data, data], (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  insertComment(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = {
+      post_comment_content: data.comment,
+      post_comment_at: mysql.raw('NOW()'),
+      post_id: data.postId,
+      user_id: data.userId,
+      give_id: data.giveId,
+    };
+
+    const query = 'INSERT INTO posts_comments SET ?';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {
         if (err) reject(err);
 
         connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  getComments(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const query = 'SELECT c.*, u.user_name, u.user_avatar FROM posts_comments AS c LEFT JOIN users AS u ON c.give_id = u.user_id WHERE post_id = ? ORDER BY post_comment_at DESC';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, data, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  totalComents(data) {
+    const db = mysql.createPool(databaseConfig);
+
+    const query = 'SELECT (SELECT COUNT(user_id) FROM posts_comments WHERE user_id = ?) AS "received", (SELECT COUNT(give_id) FROM posts_comments WHERE give_id = ?) AS "given" FROM posts_comments';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, [data, data], (error, results) => {
           connection.release();
           connection.destroy();
 

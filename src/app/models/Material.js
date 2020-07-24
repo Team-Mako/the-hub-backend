@@ -40,7 +40,7 @@ class Material {
       category = mysql.raw('');
     }
 
-    const query = 'SELECT * FROM materials ? LIMIT ?,?';
+    const query = 'SELECT * FROM materials ? ORDER BY material_name ASC LIMIT ?,?';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {
@@ -63,7 +63,7 @@ class Material {
   findById(id) {
     const db = mysql.createPool(databaseConfig);
 
-    const query = 'SELECT * FROM materials WHERE material_id = ? LIMIT 1';
+    const query = 'SELECT * FROM materials WHERE material_id = ? ORDER BY material_name ASC LIMIT 1';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {
