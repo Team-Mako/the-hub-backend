@@ -29,6 +29,7 @@ import PostsViewsControllers from './app/controllers/PostsViewsController';
 import PostByCategoryController from './app/controllers/PostByCategoryController';
 import SearchController from './app/controllers/SearchController';
 import CommentController from './app/controllers/CommentController';
+import CategoryFilterController from './app/controllers/CategoryFilterController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -62,6 +63,8 @@ routes.get('/category-post', PostByCategoryController.index);
 routes.get('/show-category/:slug', CategoryController.show);
 routes.put('/admin/update-category/:id', adminAuthMiddleware, CategoryController.update);
 routes.delete('/admin/delete-category', adminAuthMiddleware, CategoryController.delete);
+routes.get('/category-filter', CategoryFilterController.index);
+routes.get('/count-filter', TotalPostsController.index);
 
 // Type
 routes.post('/admin/create-type', adminAuthMiddleware, TypeController.store);

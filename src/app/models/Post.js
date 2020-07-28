@@ -718,6 +718,90 @@ class Post {
       });
     });
   }
+
+  filter(material = '', difficulty = '', time = '', categoryId, page, limit) {
+    const db = mysql.createPool(databaseConfig);
+
+    if (material) {
+      material = mysql.raw(`AND pm.material_id = ${material}`);
+    } else {
+      material = mysql.raw('');
+    }
+
+    if (difficulty) {
+      difficulty = mysql.raw(`AND p.post_difficult = '${difficulty}'`);
+    } else {
+      difficulty = mysql.raw('');
+    }
+
+    if (time) {
+      time = mysql.raw(`AND p.post_duration = '${time}'`);
+    } else {
+      time = mysql.raw('');
+    }
+
+    limit = parseInt(limit);
+    const begin = (limit * page) - limit;
+
+    const query = 'SELECT p.*, u.user_id, u.user_name, u.user_avatar, c.category_id, c.category_title, (SELECT COUNT(post_id) FROM posts_likes WHERE post_id = p.post_id) AS post_likes, (SELECT COUNT(post_id) FROM posts_views WHERE post_id = p.post_id) AS post_views FROM posts AS p LEFT JOIN categories AS c ON p.category_id = c.category_id LEFT JOIN users AS u ON p.user_id = u.user_id LEFT JOIN posts_materials AS pm ON p.post_id = pm.post_id WHERE p.category_id = ? ? ? ? GROUP BY p.post_id ORDER BY p.post_created_at DESC LIMIT ?,?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, [categoryId, material, difficulty, time, begin, limit], (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  countFilter(material = '', difficulty = '', time = '', categoryId) {
+    const db = mysql.createPool(databaseConfig);
+
+    let queryComplex = mysql.raw('');
+
+    if (material) {
+      material = mysql.raw(`AND pm.material_id = ${material}`);
+      queryComplex = mysql.raw('LEFT JOIN posts_materials AS pm ON p.post_id = pm.post_id');
+    } else {
+      material = mysql.raw('');
+    }
+
+    if (difficulty) {
+      difficulty = mysql.raw(`AND p.post_difficult = '${difficulty}'`);
+    } else {
+      difficulty = mysql.raw('');
+    }
+
+    if (time) {
+      time = mysql.raw(`AND p.post_duration = '${time}'`);
+    } else {
+      time = mysql.raw('');
+    }
+
+    const query = 'SELECT COUNT(p.post_id) AS total FROM posts AS p ? WHERE p.category_id = ? ? ? ?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, [queryComplex, categoryId, material, difficulty, time], (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
 }
 
 export default new Post();
