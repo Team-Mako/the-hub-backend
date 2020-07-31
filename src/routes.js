@@ -30,6 +30,8 @@ import PostByCategoryController from './app/controllers/PostByCategoryController
 import SearchController from './app/controllers/SearchController';
 import CommentController from './app/controllers/CommentController';
 import CategoryFilterController from './app/controllers/CategoryFilterController';
+import GetIdController from './app/controllers/GetIdController';
+import StepController from './app/controllers/StepController';
 
 const routes = new Router();
 const upload = multer(multerConfig);
@@ -85,7 +87,7 @@ routes.delete('/admin/delete-material', adminAuthMiddleware, MaterialController.
 routes.post('/create-post', userAuthMiddleware, upload.fields([{ name: 'cover', maxCount: 1 }, { name: 'stepCover' }]), postImage, stepImage, PostController.store);
 routes.get('/list-post', PostController.index);
 routes.get('/show-post/:slug', PostController.show);
-routes.put('/update-post/:postId', userAuthMiddleware, PostController.update);
+routes.put('/update-post/:postId', userAuthMiddleware, upload.fields([{ name: 'cover', maxCount: 1 }]), postImage, PostController.update);
 routes.delete('/delete-post', userAuthMiddleware, PostController.delete);
 routes.get('/count-post', TotalPostsController.show);
 routes.get('/post-material/:postId', PostMaterialController.index);
@@ -99,6 +101,9 @@ routes.delete('/remove-favourite/:postId', userAuthMiddleware, FavouriteControll
 routes.get('/check-favourite/:postId', userAuthMiddleware, FavouriteController.show);
 routes.get('/favourite-list', userAuthMiddleware, FavouriteController.index);
 routes.get('/search', SearchController.index);
+routes.get('/get-id', GetIdController.show);
+routes.post('/add-step', userAuthMiddleware, upload.fields([{ name: 'stepCover' }]), stepImage, StepController.store);
+routes.delete('/delete-step/:stepId', userAuthMiddleware, StepController.delete);
 
 // Comments
 routes.post('/create-comment', userAuthMiddleware, CommentController.store);

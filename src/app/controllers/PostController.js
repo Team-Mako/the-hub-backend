@@ -48,7 +48,7 @@ class PostController {
         await Post.addMaterial(meas[index], postId.insertId, material[index], userId);
       });
 
-      postId.message = 'Post Created!';
+      postId.message = 'Project Created!';
 
       return res.json(postId);
     } catch (err) {
@@ -96,19 +96,29 @@ class PostController {
       title: yup.string().required(),
       desc: yup.string().required(),
       difficult: yup.string().required(),
-      visible: yup.boolean().required(),
+      visible: yup.string().notRequired(),
       categoryId: yup.number().required(),
-      typeId: yup.number().required(),
     });
+
+    console.log(req.body);
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({ error: 'Missing or Invalid Data' });
     }
 
-    req.body.url = urlSlugify.slugify(req.body.title);
+    if (!req.body.cover) {
+      req.body.cover = '';
+    }
+
+    if (!req.body.visible) {
+      req.body.visible = 1;
+    } else {
+      req.body.visible = 0;
+    }
 
     try {
       const result = await Post.update(req.body);
+      result.message = 'Project updated!';
       return res.json(result);
     } catch (err) {
       return res.status(500).json(err);

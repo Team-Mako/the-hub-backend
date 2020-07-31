@@ -114,6 +114,31 @@ class Post {
     });
   }
 
+  getId(slug) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = [
+      slug,
+    ];
+
+    const query = 'SELECT post_id, category_id FROM posts WHERE post_url = ?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
   update(data) {
     const db = mysql.createPool(databaseConfig);
 
@@ -124,10 +149,8 @@ class Post {
       post_description: data.desc,
       post_difficult: data.difficult,
       post_duration: data.duration,
-      post_url: data.url,
       post_visible: data.visible,
       category_id: data.categoryId,
-      type_id: data.typeId,
     };
 
     const query = 'UPDATE posts SET ? WHERE post_id = ?';
@@ -217,6 +240,31 @@ class Post {
     }
 
     const query = 'INSERT INTO posts_steps SET ?';
+
+    return new Promise((resolve, reject) => {
+      db.getConnection((err, connection) => {
+        if (err) reject(err);
+
+        connection.query(query, columns, (error, results) => {
+          connection.release();
+          connection.destroy();
+
+          if (error) reject(error);
+
+          resolve(results);
+        });
+      });
+    });
+  }
+
+  deleteStep(id) {
+    const db = mysql.createPool(databaseConfig);
+
+    const columns = [
+      id,
+    ];
+
+    const query = 'DELETE FROM posts_steps WHERE post_step_id = ?';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {
