@@ -84,19 +84,10 @@ class MaterialController {
   }
 
   async delete(req, res) {
-    const schema = yup.object().shape({
-      id: yup.number().required(),
-      confirm: yup.string().matches(/(true)/),
-    });
-
-    if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Missing or Invalid Data' });
-    }
-
-    const { id } = req.body;
+    const { pid, mid } = req.query;
 
     try {
-      const result = await Material.delete(id);
+      const result = await Material.delete(pid, mid);
       return res.json(result);
     } catch (err) {
       return res.status(500).json(err);

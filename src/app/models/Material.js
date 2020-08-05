@@ -110,16 +110,16 @@ class Material {
     });
   }
 
-  delete(id) {
+  delete(pid, mid) {
     const db = mysql.createPool(databaseConfig);
 
-    const query = 'DELETE FROM materials WHERE material_id = ? LIMIT 1';
+    const query = 'DELETE FROM posts_materials WHERE material_id = ? AND post_id = ? LIMIT 1';
 
     return new Promise((resolve, reject) => {
       db.getConnection((err, connection) => {
         if (err) reject(err);
 
-        connection.query(query, id, (error, results) => {
+        connection.query(query, [mid, pid], (error, results) => {
           connection.release();
           connection.destroy();
 

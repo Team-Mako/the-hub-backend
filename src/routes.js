@@ -104,6 +104,7 @@ routes.get('/search', SearchController.index);
 routes.get('/get-id', GetIdController.show);
 routes.post('/add-step', userAuthMiddleware, upload.fields([{ name: 'stepCover' }]), stepImage, StepController.store);
 routes.delete('/delete-step/:stepId', userAuthMiddleware, StepController.delete);
+routes.delete('/delete-material', userAuthMiddleware, MaterialController.delete);
 
 // Comments
 routes.post('/create-comment', userAuthMiddleware, CommentController.store);
